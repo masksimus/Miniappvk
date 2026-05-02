@@ -1,0 +1,385 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>VK Mini App — Вакансия курьера</title>
+  <meta name="description" content="Отклик на вакансию курьера в VK Mini App: быстрый старт, удобный график, прозрачные условия." />
+  <meta name="theme-color" content="#0077ff" />
+
+  <meta property="og:type" content="website" />
+  <meta property="og:title" content="VK Mini App — Работа курьером" />
+  <meta property="og:description" content="Быстрый отклик, гибкий график и ежедневные выплаты." />
+
+  <script src="https://unpkg.com/@vkontakte/vk-bridge/dist/browser.min.js"></script>
+  <style>
+    :root {
+      --bg: #f5f7fa;
+      --surface: #ffffff;
+      --text: #11181f;
+      --subtle: #6d7885;
+      --accent: #0077ff;
+      --accent-press: #0065d8;
+      --ok: #2fa24f;
+      --radius: 16px;
+      --shadow: 0 10px 30px rgba(17, 24, 31, 0.08);
+    }
+
+    * { box-sizing: border-box; }
+    html, body { margin: 0; padding: 0; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
+      color: var(--text);
+      background: var(--bg);
+    }
+
+    .app {
+      max-width: 560px;
+      margin: 0 auto;
+      min-height: 100dvh;
+      padding: 16px 16px calc(24px + env(safe-area-inset-bottom));
+    }
+
+    .card {
+      background: var(--surface);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding: 16px;
+      margin-bottom: 12px;
+    }
+
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .badge {
+      background: rgba(0, 119, 255, 0.12);
+      color: var(--accent);
+      font-weight: 600;
+      font-size: 12px;
+      padding: 6px 10px;
+      border-radius: 999px;
+      white-space: nowrap;
+    }
+
+    h1 {
+      margin: 8px 0 4px;
+      font-size: 24px;
+      line-height: 1.2;
+    }
+
+    p { margin: 0; }
+    .muted { color: var(--subtle); font-size: 14px; line-height: 1.45; }
+
+     .hero { margin-top: 12px; }
+    .hero img { width: 100%; border-radius: 14px; display: block; }
+
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 8px;
+      margin-top: 12px;
+    }
+
+    .stat {
+      background: #f0f3f7;
+      border-radius: 12px;
+      padding: 10px;
+      text-align: center;
+    }
+
+    .stat strong {
+      display: block;
+      color: var(--accent);
+      font-size: 15px;
+      margin-bottom: 4px;
+    }
+
+    .list {
+      display: grid;
+      gap: 10px;
+      margin-top: 12px;
+    }
+
+    .item {
+      display: flex;
+      gap: 10px;
+      align-items: flex-start;
+      padding: 12px;
+      border-radius: 12px;
+      background: #f8fafc;
+    }
+
+    .dot {
+      margin-top: 4px;
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: var(--ok);
+      flex: 0 0 auto;
+    }
+
+    .actions { display: grid; gap: 10px; }
+
+    button {
+      border: 0;
+      border-radius: 14px;
+      padding: 14px 16px;
+      font-size: 16px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    .primary {
+      background: var(--accent);
+      color: #fff;
+    }
+
+    .primary:active { background: var(--accent-press); }
+
+    .secondary {
+      background: #eaf2ff;
+      color: #075ac7;
+    }
+
+    .chips { display:flex; flex-wrap:wrap; gap:8px; margin-top:10px; }
+    .chip { background:#f0f6ff; color:#155ab6; font-size:13px; font-weight:600; padding:8px 10px; border-radius:999px; }
+
+    .footer {
+      text-align: center;
+      margin-top: 8px;
+      font-size: 12px;
+      color: var(--subtle);
+    }
+
+    .hidden { display: none; }
+
+    .help {
+      margin-top: 10px;
+      border: 1px dashed #c9d7ee;
+      background: #f7fbff;
+      border-radius: 12px;
+      padding: 12px;
+    }
+
+    .help-row {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 8px;
+      margin-top: 8px;
+    }
+
+    .help input {
+      width: 100%;
+      border: 1px solid #d3def0;
+      border-radius: 10px;
+      padding: 10px;
+      font-size: 13px;
+      background: #fff;
+    }
+
+    .mini-btn {
+      border-radius: 10px;
+      padding: 10px 12px;
+      font-size: 13px;
+      font-weight: 700;
+      border: 0;
+      background: #dfeeff;
+      color: #0a5ecf;
+    }
+  </style>
+</head>
+<body>
+  <main class="app">
+    <section class="card">
+      <div class="header">
+        <div>
+          <div class="badge">VK Mini App</div>
+          <h1 id="title">Работа курьером</h1>
+          <p class="muted">Быстрый отклик, прозрачные условия и удобный график.</p>
+        </div>
+      </div>
+
+      <div class="hero">
+        <img alt="Курьер на доставке" src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 720 260'><defs><linearGradient id='g' x1='0' y1='0' x2='1' y2='1'><stop stop-color='%230077ff' offset='0'/><stop stop-color='%2300b5ff' offset='1'/></linearGradient></defs><rect width='720' height='260' rx='24' fill='url(%23g)'/><circle cx='590' cy='72' r='38' fill='white' fill-opacity='.16'/><circle cx='640' cy='170' r='56' fill='white' fill-opacity='.12'/><text x='34' y='90' fill='white' font-size='44' font-family='Arial' font-weight='700'>Начни зарабатывать</text><text x='34' y='140' fill='white' font-size='44' font-family='Arial' font-weight='700'>уже сегодня</text><text x='34' y='186' fill='white' font-size='24' font-family='Arial' fill-opacity='.94'>Гибкий график • Выплаты каждый день</text></svg>">
+      </div>
+
+      <div class="stats">
+        <div class="stat"><strong>от 2500₽</strong>за смену</div>
+        <div class="stat"><strong>2–4 часа</strong>гибкий график</div>
+        <div class="stat"><strong>ежедневно</strong>выплаты</div>
+      </div>
+    </section>
+
+    <section class="card">
+      <p><strong>Почему это удобно</strong></p>
+      <div class="list">
+        <div class="item"><span class="dot"></span><div><strong>Рядом с домом</strong><p class="muted">Выбирайте район и время самостоятельно.</p></div></div>
+        <div class="item"><span class="dot"></span><div><strong>Официально</strong><p class="muted">Оформление по договору и поддержка в чате.</p></div></div>
+        <div class="item"><span class="dot"></span><div><strong>Быстрый старт</strong><p class="muted">Отклик и первичная анкета за несколько минут.</p></div></div>
+      </div>
+    </section>
+
+    <section class="card">
+      <p><strong>Почему нам доверяют</strong></p>
+      <div class="chips">
+        <span class="chip">✅ Проверенный партнёр</span>
+        <span class="chip">💳 Выплаты на карту</span>
+        <span class="chip">📍 Работа рядом с домом</span>
+      </div>
+    </section>
+
+    <section class="card actions">
+      <button class="primary" id="applyButton" type="button">Получить анкету</button>
+      <button class="secondary" id="shareButton" type="button">Отправить другу + бонус</button>
+    </section>
+
+    <p class="footer">Нажимая «Получить анкету», ссылка открывается во внешнем браузере, чтобы избежать блокировки встроенного WebView.</p>
+    <p class="footer" id="errorHint" style="display:none; color:#b42318;">Если VK ограничил переход, используйте кнопки ниже: открыть внешне или скопировать ссылку.</p>
+    <section class="card help" id="manualHelp" style="display:none;">
+      <p><strong>VK блокирует трек-ссылку во встроенном браузере</strong></p>
+      <p class="muted">Откройте ссылку во внешнем браузере (Chrome/Safari) или скопируйте вручную:</p>
+      <div class="help-row">
+        <input id="partnerUrlInput" readonly>
+        <button class="mini-btn" id="copyLinkButton" type="button">Копировать</button>
+      </div>
+      <div class="help-row">
+        <button class="mini-btn" id="openExternalButton" type="button">Открыть во внешнем браузере</button>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    (function () {
+      "use strict";
+
+      const PARTNER_URL = "https://trk.ppdu.ru/click/yiNaHSI6?erid=CQH36pWzJqVGXC5oLP8WVVNCNqJmbhiUPijGiu4zpwPd7G";
+      const SHARE_TEXT = "Нашёл(а) вакансию курьера в VK Mini App — можно быстро начать.";
+
+      const title = document.getElementById("title");
+      const applyButton = document.getElementById("applyButton");
+      const shareButton = document.getElementById("shareButton");
+      const manualHelp = document.getElementById("manualHelp");
+      const partnerUrlInput = document.getElementById("partnerUrlInput");
+      const copyLinkButton = document.getElementById("copyLinkButton");
+      const openExternalButton = document.getElementById("openExternalButton");
+
+      if (partnerUrlInput) partnerUrlInput.value = PARTNER_URL;
+
+      function setLoading(isLoading) {
+        applyButton.disabled = isLoading;
+        applyButton.textContent = isLoading ? "Открываем..." : "Получить анкету";
+      }
+
+      async function initVk() {
+        if (typeof vkBridge === "undefined") return;
+        try {
+          await vkBridge.send("VKWebAppInit");
+          const user = await vkBridge.send("VKWebAppGetUserInfo");
+          if (user && user.first_name) {
+            title.textContent = `${user.first_name}, работа курьером`;
+          }
+        } catch (_) {
+          // no-op: fallback UI already available
+        }
+      }
+
+      async function openPartner() {
+        setLoading(true);
+        const hint = document.getElementById("errorHint");
+
+        try {
+          if (typeof vkBridge !== "undefined") {
+            // Open directly in external browser first; in-app webview often returns ERR_BLOCKED_BY_RESPONSE
+            try {
+              await vkBridge.send("VKWebAppOpenLink", { url: PARTNER_URL, force_external: true });
+              return;
+            } catch (_) {}
+
+            try {
+              await vkBridge.send("VKWebAppOpenLink", { url: PARTNER_URL, external: true });
+              return;
+            } catch (_) {}
+
+            // Last bridge attempt without flags
+            try {
+              await vkBridge.send("VKWebAppOpenLink", { url: PARTNER_URL });
+              return;
+            } catch (_) {}
+          }
+
+          window.open(PARTNER_URL, "_blank", "noopener,noreferrer");
+        } catch (_) {
+          window.location.href = PARTNER_URL;
+        } finally {
+          if (hint) hint.style.display = "block";
+          if (manualHelp) manualHelp.style.display = "block";
+          setTimeout(() => setLoading(false), 1200);
+        }
+      }
+
+      async function copyPartnerLink() {
+        try {
+          await navigator.clipboard.writeText(PARTNER_URL);
+          alert("Ссылка на анкету скопирована");
+        } catch (_) {
+          window.prompt("Скопируйте ссылку:", PARTNER_URL);
+        }
+      }
+
+      async function openExternalBrowser() {
+        try {
+          if (typeof vkBridge !== "undefined") {
+            await vkBridge.send("VKWebAppOpenLink", { url: PARTNER_URL, force_external: true });
+            return;
+          }
+        } catch (_) {
+          // fallback below
+        }
+
+        try {
+          window.open(PARTNER_URL, "_blank", "noopener,noreferrer");
+        } catch (_) {
+          window.location.href = PARTNER_URL;
+        }
+      }
+
+      async function shareApp() {
+        const shareLink = window.location.href;
+        try {
+          if (typeof vkBridge !== "undefined") {
+            await vkBridge.send("VKWebAppShare", { link: shareLink });
+            return;
+          }
+        } catch (_) {
+          // fallback below
+        }
+
+        const text = `${SHARE_TEXT} ${shareLink}`;
+        try {
+          await navigator.clipboard.writeText(text);
+          alert("Ссылка скопирована в буфер обмена");
+        } catch (_) {
+          window.prompt("Скопируйте ссылку:", text);
+        }
+      }
+
+      applyButton.addEventListener("click", openPartner);
+      shareButton.addEventListener("click", shareApp);
+
+      applyButton.addEventListener("contextmenu", async (e) => {
+        e.preventDefault();
+        await copyPartnerLink();
+      });
+
+      copyLinkButton.addEventListener("click", copyPartnerLink);
+      openExternalButton.addEventListener("click", openExternalBrowser);
+
+      initVk();
+    })();
+  </script>
+</body>
+</html>
