@@ -1,0 +1,133 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<title>VK Mini App — Вакансия курьера</title>
+<meta name="description" content="Отклик на вакансию курьера в VK Mini App: быстрый старт, удобный график, прозрачные условия." />
+<meta name="theme-color" content="#0077ff" />
+<script src="https://unpkg.com/@vkontakte/vk-bridge/dist/browser.min.js"></script>
+<style>
+:root{--bg:#f5f7fa;--surface:#fff;--text:#11181f;--subtle:#6d7885;--accent:#0077ff;--accent-press:#0065d8;--ok:#2fa24f;--radius:16px;--shadow:0 10px 30px rgba(17,24,31,.08)}
+*{box-sizing:border-box}html,body{margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;color:var(--text);background:var(--bg)}
+.app{max-width:560px;margin:0 auto;min-height:100dvh;padding:16px 16px calc(24px + env(safe-area-inset-bottom))}
+.card{background:var(--surface);border-radius:var(--radius);box-shadow:var(--shadow);padding:16px;margin-bottom:12px}
+.header{display:flex;justify-content:space-between;align-items:center;gap:12px}
+.badge{background:rgba(0,119,255,.12);color:var(--accent);font-weight:600;font-size:12px;padding:6px 10px;border-radius:999px;white-space:nowrap}
+h1{margin:8px 0 4px;font-size:24px;line-height:1.2}p{margin:0}
+.muted{color:var(--subtle);font-size:14px;line-height:1.45}
+.hero{margin-top:12px}.hero img{width:100%;border-radius:14px;display:block}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:12px}
+.stat{background:#f0f3f7;border-radius:12px;padding:10px;text-align:center}
+.stat strong{display:block;color:var(--accent);font-size:15px;margin-bottom:4px}
+.list{display:grid;gap:10px;margin-top:12px}
+.item{display:flex;gap:10px;align-items:flex-start;padding:12px;border-radius:12px;background:#f8fafc}
+.dot{margin-top:4px;width:10px;height:10px;border-radius:50%;background:var(--ok);flex:0 0 auto}
+.actions{display:grid;gap:10px}
+button{border:0;border-radius:14px;padding:14px 16px;font-size:16px;font-weight:700;cursor:pointer;width:100%}
+button:disabled{opacity:.65;cursor:not-allowed}
+.primary{background:var(--accent);color:#fff}.primary:active:not(:disabled){background:var(--accent-press)}
+.secondary{background:#eaf2ff;color:#075ac7}
+.chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}
+.chip{background:#f0f6ff;color:#155ab6;font-size:13px;font-weight:600;padding:8px 10px;border-radius:999px}
+.footer{text-align:center;margin-top:8px;font-size:12px;color:var(--subtle)}
+#toast{position:fixed;bottom:calc(24px + env(safe-area-inset-bottom));left:50%;transform:translateX(-50%) translateY(20px);background:#11181f;color:#fff;padding:12px 20px;border-radius:14px;font-size:14px;font-weight:600;opacity:0;pointer-events:none;transition:opacity .25s,transform .25s;z-index:9999;max-width:calc(100vw - 32px);text-align:center}
+#toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+#toast.success{background:var(--ok)}#toast.error{background:#b42318}
+</style>
+</head>
+<body>
+<div id="toast"></div>
+<main class="app">
+<section class="card">
+<div class="header"><div>
+<div class="badge">VK Mini App</div>
+<h1 id="title">Работа курьером</h1>
+<p class="muted">Быстрый отклик, прозрачные условия и удобный график.</p>
+</div></div>
+<div class="hero"><img alt="Курьер" src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 720 260'><defs><linearGradient id='g' x1='0' y1='0' x2='1' y2='1'><stop stop-color='%230077ff' offset='0'/><stop stop-color='%2300b5ff' offset='1'/></linearGradient></defs><rect width='720' height='260' rx='24' fill='url(%23g)'/><text x='34' y='90' fill='white' font-size='44' font-family='Arial' font-weight='700'>Начни зарабатывать</text><text x='34' y='140' fill='white' font-size='44' font-family='Arial' font-weight='700'>уже сегодня</text><text x='34' y='186' fill='white' font-size='24' font-family='Arial' fill-opacity='.94'>Гибкий график • Выплаты каждый день</text></svg>"></div>
+<div class="stats">
+<div class="stat"><strong>от 2500₽</strong>за смену</div>
+<div class="stat"><strong>2–4 часа</strong>гибкий график</div>
+<div class="stat"><strong>ежедневно</strong>выплаты</div>
+</div>
+</section>
+<section class="card">
+<p><strong>Почему это удобно</strong></p>
+<div class="list">
+<div class="item"><span class="dot"></span><div><strong>Рядом с домом</strong><p class="muted">Выбирайте район и время самостоятельно.</p></div></div>
+<div class="item"><span class="dot"></span><div><strong>Официально</strong><p class="muted">Оформление по договору и поддержка в чате.</p></div></div>
+<div class="item"><span class="dot"></span><div><strong>Быстрый старт</strong><p class="muted">Отклик и первичная анкета за несколько минут.</p></div></div>
+</div>
+</section>
+<section class="card">
+<p><strong>Почему нам доверяют</strong></p>
+<div class="chips">
+<span class="chip">✅ Проверенный партнёр</span>
+<span class="chip">💳 Выплаты на карту</span>
+<span class="chip">📍 Работа рядом с домом</span>
+</div>
+</section>
+<section class="card actions">
+<button class="primary" id="applyButton" type="button">Получить анкету</button>
+<button class="secondary" id="shareButton" type="button">Отправить другу + бонус</button>
+</section>
+<p class="footer">Анкета откроется в браузере для удобного заполнения.</p>
+</main>
+<script>
+(function(){"use strict";
+var PARTNER_URL="https://masksimus.github.io/Miniappvk/go/";
+var SHARE_TEXT="Нашёл(а) вакансию курьера в VK Mini App — можно быстро начать.";
+var titleEl=document.getElementById("title");
+var applyBtn=document.getElementById("applyButton");
+var shareBtn=document.getElementById("shareButton");
+var toast=document.getElementById("toast");
+var toastTimer=null;
+function showToast(msg,type){
+toast.textContent=msg;
+toast.className="show"+(type?" "+type:"");
+clearTimeout(toastTimer);
+toastTimer=setTimeout(function(){toast.className="";},3000);
+}
+function setLoading(on){
+applyBtn.disabled=on;
+applyBtn.textContent=on?"Открываем…":"Получить анкету";
+}
+async function initVk(){
+if(typeof vkBridge==="undefined")return;
+try{
+await vkBridge.send("VKWebAppInit");
+var user=await vkBridge.send("VKWebAppGetUserInfo");
+if(user&&user.first_name)titleEl.textContent=user.first_name+", работа курьером";
+}catch(e){}
+}
+async function openPartner(){
+setLoading(true);
+var opened=false;
+try{
+if(typeof vkBridge!=="undefined"){
+var opts=[{url:PARTNER_URL,force_external:true},{url:PARTNER_URL,external:true},{url:PARTNER_URL}];
+for(var i=0;i<opts.length;i++){
+try{await vkBridge.send("VKWebAppOpenLink",opts[i]);opened=true;break;}catch(e){}
+}
+}
+if(!opened){var w=window.open(PARTNER_URL,"_blank","noopener,noreferrer");if(!w)window.location.href=PARTNER_URL;}
+}catch(e){window.location.href=PARTNER_URL;}
+finally{setTimeout(function(){setLoading(false);},1200);}
+}
+async function shareApp(){
+var shareLink=window.location.href;
+try{
+if(typeof vkBridge!=="undefined"){await vkBridge.send("VKWebAppShare",{link:shareLink});return;}
+}catch(e){}
+try{await navigator.clipboard.writeText(SHARE_TEXT+" "+shareLink);showToast("✅ Ссылка скопирована","success");}
+catch(e){showToast("Скопируйте ссылку из адресной строки","");}
+}
+applyBtn.addEventListener("click",openPartner);
+shareBtn.addEventListener("click",shareApp);
+initVk();
+})();
+</script>
+</body>
+</html>
