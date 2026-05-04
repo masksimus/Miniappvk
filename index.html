@@ -1,0 +1,159 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<title>VK Mini App — Работа курьером</title>
+<meta name="description" content="Подборка вакансий курьера: Купер и X5. Гибкий график, выплаты на карту, оформление по договору." />
+<meta name="theme-color" content="#0077ff" />
+<script src="https://unpkg.com/@vkontakte/vk-bridge/dist/browser.min.js"></script>
+<style>
+:root{--bg:#f5f7fa;--surface:#fff;--text:#11181f;--subtle:#6d7885;--accent:#0077ff;--accent-press:#0065d8;--ok:#2fa24f;--radius:16px;--shadow:0 10px 30px rgba(17,24,31,.08)}
+*{box-sizing:border-box}html,body{margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;color:var(--text);background:var(--bg)}
+.app{max-width:560px;margin:0 auto;min-height:100dvh;padding:16px 16px calc(24px + env(safe-area-inset-bottom))}
+.card{background:var(--surface);border-radius:var(--radius);box-shadow:var(--shadow);padding:16px;margin-bottom:12px}
+.badge{display:inline-block;background:rgba(0,119,255,.12);color:var(--accent);font-weight:600;font-size:12px;padding:6px 10px;border-radius:999px}
+h1{margin:8px 0 4px;font-size:24px;line-height:1.2}p{margin:0}
+.muted{color:var(--subtle);font-size:14px;line-height:1.45}
+.hero{margin-top:12px}.hero img{width:100%;border-radius:14px;display:block}
+.section-title{font-size:16px;font-weight:700;margin:4px 0 12px}
+.vacancy{background:#f8fafc;border-radius:14px;padding:14px;margin-bottom:10px;display:flex;align-items:center;gap:12px;cursor:pointer;transition:transform .1s;border:none;width:100%;text-align:left;font-family:inherit;color:inherit}
+.vacancy:active{transform:scale(.98);background:#eef3f9}
+.vacancy:disabled{opacity:.65;cursor:not-allowed}
+.logo{width:52px;height:52px;border-radius:12px;flex:0 0 auto;display:flex;align-items:center;justify-content:center;font-weight:800;color:#fff;font-size:13px;letter-spacing:-.3px}
+.logo.kuper{background:#21a038}
+.logo.x5{background:#e30613}
+.vac-info{flex:1;min-width:0}
+.vac-title{font-weight:700;font-size:15px;margin-bottom:2px}
+.vac-meta{font-size:13px;color:var(--subtle)}
+.arrow{color:var(--subtle);font-size:22px;flex:0 0 auto;font-weight:300}
+.list{display:grid;gap:10px;margin-top:12px}
+.item{display:flex;gap:10px;align-items:flex-start;padding:12px;border-radius:12px;background:#f8fafc}
+.dot{margin-top:4px;width:10px;height:10px;border-radius:50%;background:var(--ok);flex:0 0 auto}
+.chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}
+.chip{background:#f0f6ff;color:#155ab6;font-size:13px;font-weight:600;padding:8px 10px;border-radius:999px}
+.share-btn{border:0;border-radius:14px;padding:14px 16px;font-size:16px;font-weight:700;cursor:pointer;width:100%;font-family:inherit;background:#eaf2ff;color:#075ac7}
+.footer{text-align:center;margin-top:8px;font-size:12px;color:var(--subtle)}
+#toast{position:fixed;bottom:calc(24px + env(safe-area-inset-bottom));left:50%;transform:translateX(-50%) translateY(20px);background:#11181f;color:#fff;padding:12px 20px;border-radius:14px;font-size:14px;font-weight:600;opacity:0;pointer-events:none;transition:opacity .25s,transform .25s;z-index:9999;max-width:calc(100vw - 32px);text-align:center}
+#toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+#toast.success{background:var(--ok)}
+</style>
+</head>
+<body>
+<div id="toast"></div>
+<main class="app">
+
+<section class="card">
+<div class="badge">VK Mini App</div>
+<h1 id="title">Работа курьером</h1>
+<p class="muted">Подборка проверенных вакансий. Гибкий график, выплаты на карту.</p>
+<div class="hero"><img alt="Курьер" src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 720 260'><defs><linearGradient id='g' x1='0' y1='0' x2='1' y2='1'><stop stop-color='%230077ff' offset='0'/><stop stop-color='%2300b5ff' offset='1'/></linearGradient></defs><rect width='720' height='260' rx='24' fill='url(%23g)'/><text x='34' y='90' fill='white' font-size='44' font-family='Arial' font-weight='700'>Начни зарабатывать</text><text x='34' y='140' fill='white' font-size='44' font-family='Arial' font-weight='700'>уже сегодня</text><text x='34' y='186' fill='white' font-size='24' font-family='Arial' fill-opacity='.94'>Гибкий график • Выплаты каждый день</text></svg>"></div>
+</section>
+
+<section class="card">
+<p class="section-title">Доступные вакансии</p>
+
+<button class="vacancy" data-target="kuper" type="button">
+<div class="logo kuper">Купер</div>
+<div class="vac-info">
+<div class="vac-title">Курьер в Купер</div>
+<div class="vac-meta">от 3000 ₽/смена · авто/пеший</div>
+</div>
+<div class="arrow">›</div>
+</button>
+
+<button class="vacancy" data-target="x5" type="button">
+<div class="logo x5">X5</div>
+<div class="vac-info">
+<div class="vac-title">Курьер X5 Доставка</div>
+<div class="vac-meta">Пятёрочка · Перекрёсток · Чижик</div>
+</div>
+<div class="arrow">›</div>
+</button>
+</section>
+
+<section class="card">
+<p class="section-title">Почему это удобно</p>
+<div class="list">
+<div class="item"><span class="dot"></span><div><strong>Рядом с домом</strong><p class="muted">Выбирайте район и время самостоятельно.</p></div></div>
+<div class="item"><span class="dot"></span><div><strong>Официально</strong><p class="muted">Оформление по договору и поддержка в чате.</p></div></div>
+<div class="item"><span class="dot"></span><div><strong>Быстрый старт</strong><p class="muted">Отклик и первичная анкета за несколько минут.</p></div></div>
+</div>
+</section>
+
+<section class="card">
+<p class="section-title">Почему нам доверяют</p>
+<div class="chips">
+<span class="chip">✅ Проверенный партнёр</span>
+<span class="chip">💳 Выплаты на карту</span>
+<span class="chip">📍 Работа рядом с домом</span>
+</div>
+</section>
+
+<section class="card">
+<button class="share-btn" id="shareButton" type="button">Отправить другу + бонус</button>
+</section>
+
+<p class="footer">Анкета откроется для удобного заполнения.</p>
+</main>
+
+<script>
+(function(){"use strict";
+var BASE="https://masksimus.github.io/Miniappvk/go/";
+var LINKS={
+  kuper:BASE+"kuper.html",
+  x5:BASE+"x5.html"
+};
+var SHARE_TEXT="Нашёл(а) подборку вакансий курьера в VK Mini App — можно быстро оформиться.";
+var titleEl=document.getElementById("title");
+var shareBtn=document.getElementById("shareButton");
+var toast=document.getElementById("toast");
+var toastTimer=null;
+
+function showToast(msg,type){
+toast.textContent=msg;
+toast.className="show"+(type?" "+type:"");
+clearTimeout(toastTimer);
+toastTimer=setTimeout(function(){toast.className="";},3000);
+}
+
+async function initVk(){
+if(typeof vkBridge==="undefined")return;
+try{
+await vkBridge.send("VKWebAppInit");
+var user=await vkBridge.send("VKWebAppGetUserInfo");
+if(user&&user.first_name)titleEl.textContent=user.first_name+", работа курьером";
+}catch(e){}
+}
+
+async function openVacancy(target){
+var url=LINKS[target];
+if(!url)return;
+if(typeof vkBridge!=="undefined"&&vkBridge.supports&&vkBridge.supports("VKWebAppOpenLink")){
+var opts=[{url:url,force_external:true},{url:url,external:true},{url:url}];
+for(var i=0;i<opts.length;i++){
+try{await vkBridge.send("VKWebAppOpenLink",opts[i]);return;}catch(e){}
+}
+}
+window.location.href=url;
+}
+
+async function shareApp(){
+var shareLink=window.location.href;
+try{
+if(typeof vkBridge!=="undefined"){await vkBridge.send("VKWebAppShare",{link:shareLink});return;}
+}catch(e){}
+try{await navigator.clipboard.writeText(SHARE_TEXT+" "+shareLink);showToast("✅ Ссылка скопирована","success");}
+catch(e){showToast("Скопируйте ссылку из адресной строки","");}
+}
+
+document.querySelectorAll(".vacancy").forEach(function(btn){
+btn.addEventListener("click",function(){openVacancy(btn.getAttribute("data-target"));});
+});
+shareBtn.addEventListener("click",shareApp);
+initVk();
+})();
+</script>
+</body>
+</html>
